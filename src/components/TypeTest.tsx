@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Timer from "./Timer";
 const words = [
   "hello",
   "world",
@@ -12,37 +13,78 @@ const words = [
   "but",
 ];
 
+type Status = "idle" | "running" | "finished";
+
 export default function TypeTest() {
   const [generatedWords, setGeneratedWords] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  // duration in seconds
+  const [duration, setDuration] = useState(30);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentLetter, setCurrentLetter] = useState(0);
 
-  useEffect(() => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function generateWords() {
     const newWords = [];
     for (let i = 0; i < 8; i++) {
       newWords.push(`${words[Math.floor(Math.random() * words.length)]} `);
     }
     setGeneratedWords(newWords);
+  }
+
+  useEffect(() => {
+    generateWords();
   }, []);
+
+  function handleInputValueChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (status === "idle") {
+      setStatus("running");
+    }
+
+    setInputValue(e.target.value);
+  }
+
+  function restart() {
+    setStatus("idle");
+    setInputValue("");
+    inputRef.current?.focus();
+    generateWords();
+  }
+
+  function handleSpace(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === " " || e.code === "Space") {
+      setInputValue("");
+    }
+  }
 
   return (
     <div className="flex flex-col gap-2">
-      <div id="test" className="h-24 bg-neutral-900 p-4 rounded-xl text-2xl font-bold">
+      <div
+        id="test"
+        className="h-24 bg-neutral-900 p-4 rounded-xl text-2xl font-bold"
+      >
         {generatedWords.map((word, index) => (
-          <span key={`{word}_${index}`}>
-            {word}
-          </span>
+          <span key={`{word}_${index}`}>{word}</span>
         ))}
       </div>
       <div className="flex flex-row gap-2">
-        <input className="flex-1 bg-neutral-900 rounded-xl px-4" />
+        <input
+          ref={inputRef}
+          value={inputValue}
+          onChange={handleInputValueChange}
+          onKeyDown={handleSpace}
+          className="flex-1 bg-neutral-900 rounded-xl px-4"
+        />
         <div id="wpm" className="bg-neutral-900 p-4 rounded-xl">
           0 WPM
         </div>
-        <div id="timer" className="bg-neutral-900 p-4 rounded-xl">
-          0:00
-        </div>
+        <Timer status={status} duration={duration} />
         <button
           type="button"
           className="bg-neutral-900 hover:bg-neutral-800 rounded-xl p-4"
+          onClick={restart}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -57,6 +99,8 @@ export default function TypeTest() {
           </svg>
         </button>
       </div>
+
+      {generatedWords[currentWordIndex]}
     </div>
   );
 }
