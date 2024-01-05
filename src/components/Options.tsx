@@ -17,7 +17,11 @@ function TestDuration() {
   const options = [10, 30, 60, 120];
 
   function handleDurationChange(value: number) {
-    dispatch({ type: "update_state", payload: { duration: value } });
+    dispatch({
+      type: "update_state",
+      payload: { duration: value, status: "idle", input: "" },
+    });
+    dispatch({ type: "generate_words" })
   }
 
   return (
@@ -32,7 +36,9 @@ function TestDuration() {
               type="button"
               key={`dur_opt_${index}`}
               onClick={() => handleDurationChange(option)}
-              className={`${isSelected ? "bg-neutral-800" : "bg-transparent"} px-4 py-1 rounded-full`}
+              className={`${
+                isSelected ? "bg-neutral-800" : "bg-transparent"
+              } px-4 py-1 rounded-full`}
             >
               {option}
             </button>

@@ -29,12 +29,9 @@ export default function Timer() {
           setTime((prevTime) => prevTime - 1);
         } else if (time === 0) {
           clearInterval(interval);
+          dispatch({ type: "finish" })
         }
       }, 1000);
-
-      if (time === 0) {
-        dispatch({ type: "finish" });
-      }
     }
 
     return () => {

@@ -1,6 +1,12 @@
-import { ReducerState, ReducerAction } from '@/context/TypeTest';
+"use client";
 
-export const reducer = (state: ReducerState, action: ReducerAction): ReducerState => {
+import { ReducerState, ReducerAction } from "@/context/TypeTest";
+import { generateWords } from "@/lib/words";
+
+export const reducer = (
+  state: ReducerState,
+  action: ReducerAction,
+): ReducerState => {
   switch (action.type) {
     case "start":
       return {
@@ -10,6 +16,7 @@ export const reducer = (state: ReducerState, action: ReducerAction): ReducerStat
     case "restart":
       return {
         ...state,
+        words: generateWords(20),
         status: "idle",
         input: "",
       };
@@ -18,6 +25,11 @@ export const reducer = (state: ReducerState, action: ReducerAction): ReducerStat
         ...state,
         status: "finished",
       };
+    case "generate_words":
+      return {
+        ...state,
+        words: generateWords(20),
+      }
     case "update_state":
       return {
         ...state,
@@ -27,14 +39,13 @@ export const reducer = (state: ReducerState, action: ReducerAction): ReducerStat
       return {
         ...state,
         input: action.payload?.input ?? "",
-      }
+      };
     case "input_space":
       return {
         ...state,
-        input: ""
-      }
+        input: "",
+      };
     default:
       return state;
   }
 };
-

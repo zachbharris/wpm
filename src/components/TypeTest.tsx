@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useReducer } from "react";
+import { useCallback, useEffect, useRef, useReducer, useState } from "react";
 import {
   TypeTestContext,
   TypeTestDispatchContext,
@@ -10,73 +10,107 @@ import { reducer } from "@/reducers/TypeTest";
 import Timer from "./Timer";
 import Options from "./Options";
 
-const words = [
-  "hello",
-  "world",
-  "text",
-  "test",
-  "twitch",
-  "youtube",
-  "and",
-  "but",
-];
-
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const [generatedWords, setGeneratedWords] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [currentChar, setCurrentChar] = useState(0);
+  const [currentWord, setCurrentWord] = useState(0);
 
-  function generateWords() {
-    const newWords = [];
-    for (let i = 0; i < 8; i++) {
-      newWords.push(`${words[Math.floor(Math.random() * words.length)]} `);
+  const handleCursor = useCallback(() => {
+    const cursor = document.getElementById("cursor");
+    const word = document.getElementById(`word_${currentWord}`);
+    const char = document.getElementById(`char_${currentWord}_${currentChar}`);
+
+    if (cursor && word && char) {
+      cursor.style.left = `${char.offsetLeft}px`;
+      cursor.style.width = `${char.offsetWidth}px`;
     }
-    setGeneratedWords(newWords);
-  }
+  }, [currentWord, currentChar]);
 
   useEffect(() => {
-    generateWords();
-  }, []);
+    handleCursor();
+  }, [handleCursor]);
+
+  useEffect(() => {
+    if (state.status === "idle") {
+      setCurrentChar(0);
+      setCurrentWord(0);
+      handleCursor();
+    }
+  }, [state.status, handleCursor]);
 
   function handleInputValueChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (state.status === "idle") {
       dispatch({ type: "start" });
     }
-    
-    dispatch({ type: "input", payload: { input: e.target.value } })
+
+    const chars = e.target.value.split("");
+    const recentlyTypedChar = chars[chars.length - 1];
+
+    if (recentlyTypedChar === " ") {
+      setCurrentWord((prev) => prev + 1);
+      setCurrentChar(0);
+      dispatch({ type: "input", payload: { input: "" } });
+    } else {
+      setCurrentChar(e.target.value.length);
+      dispatch({ type: "input", payload: { input: e.target.value } });
+    }
   }
 
   function restart() {
     dispatch({ type: "restart" });
     inputRef.current?.focus();
-    generateWords();
   }
 
-  function handleSpace(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === " " || e.code === "Space") {
-      dispatch({ type: "input_space" })
-    }
-  }
+  useEffect(() => {
+    dispatch({ type: "generate_words" });
+  }, []);
 
   return (
     <TypeTestContext.Provider value={state}>
       <TypeTestDispatchContext.Provider value={dispatch}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 relative">
           <div
             id="test"
-            className="h-24 bg-neutral-900 p-4 rounded-xl text-2xl font-bold"
+            className="select-none h-24 bg-neutral-900 p-4 rounded-lg text-2xl font-bold"
           >
-            {generatedWords.map((word, index) => (
-              <span key={`{word}_${index}`}>{word}</span>
-            ))}
+            <div>
+              {state.words.map((word, index) => {
+                const wordId = `word_${index}`;
+                return (
+                  <span
+                    id={wordId}
+                    key={wordId}
+                    className="z-10 whitespace-pre-wrap"
+                  >
+                    {word.split("").map((char, charIndex) => {
+                      const charId = `char_${index}_${charIndex}`;
+                      return (
+                        <span id={charId} key={charId}>
+                          {char}
+                        </span>
+                      );
+                    })}
+                  </span>
+                );
+              })}
+            </div>
+
+            <span
+              id="cursor"
+              className="absolute bg-neutral-700 h-8 rounded-sm"
+              style={{
+                top: 16,
+                left: 16,
+                zIndex: 0,
+              }}
+            />
           </div>
           <div className="flex flex-row gap-2">
             <input
               ref={inputRef}
               value={state.input}
               onChange={handleInputValueChange}
-              onKeyDown={handleSpace}
               className="flex-1 bg-neutral-900 rounded-xl px-4 disabled:cursor-not-allowed disabled:text-neutral-700"
               disabled={state.status === "finished"}
             />
