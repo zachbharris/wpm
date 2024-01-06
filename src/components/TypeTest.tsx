@@ -12,16 +12,38 @@ import { reducer } from "@/reducers/TypeTest";
 import Timer from "./Timer";
 import Options from "./Options";
 
+const DEFAULT_WORD_OFFSET = 17;
+
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [currentLine, setCurrentLine] = useState(0);
   const [currentChar, setCurrentChar] = useState(0);
   const [currentWord, setCurrentWord] = useState(0);
 
+  function getCurrentWord() {
+    return document.getElementById(`word_${currentWord}`);
+  }
+
+  function getCurrentChar() {
+    return document.getElementById(`char_${currentWord}_${currentChar}`);
+  }
+
+  function getCurrentLine() {
+    return document.getElementById(`line_${currentLine}`);
+  }
+
+  function checkIfAtEndOfLine() {
+    const line = getCurrentLine();
+    const word = getCurrentWord();
+
+    return line?.children[line?.children.length - 1] === word;
+  }
+
   const handleCursor = useCallback(() => {
     const cursor = document.getElementById("cursor");
-    const word = document.getElementById(`word_${currentWord}`);
-    const char = document.getElementById(`char_${currentWord}_${currentChar}`);
+    const word = getCurrentWord();
+    const char = getCurrentChar();
 
     if (cursor && word && char) {
       cursor.style.left = `${word.offsetLeft + char.offsetLeft}px`;
@@ -30,13 +52,11 @@ export default function TypeTest() {
   }, [state.words, currentWord, currentChar]);
 
   useEffect(() => {
-    handleCursor();
-  }, [handleCursor]);
-
-  useEffect(() => {
     if (state.status === "idle") {
       setCurrentChar(0);
       setCurrentWord(0);
+      handleCursor();
+    } else {
       handleCursor();
     }
   }, [state.status, handleCursor]);
@@ -50,15 +70,31 @@ export default function TypeTest() {
     const recentlyTypedChar = chars[chars.length - 1];
 
     if (recentlyTypedChar === " ") {
-      setCurrentWord((prev) => prev + 1);
-      setCurrentChar(0);
+      const isEndOfLine = checkIfAtEndOfLine();
+
+      if (isEndOfLine) {
+        setCurrentLine((prev) => prev + 1);
+        setCurrentWord(0);
+        setCurrentChar(0);
+        dispatch({ type: "generate_line" });
+      } else {
+        setCurrentWord((prev) => prev + 1);
+        setCurrentChar(0);
+      }
+
       dispatch({ type: "input", payload: { input: "" } });
     } else {
       const charIndex = e.target.value.length;
       const newInputValue = e.target.value;
 
       const inputData = [...state.inputData];
-      inputData[currentWord] = handleCurrentWordInputData(newInputValue);
+
+      if (!inputData[currentLine]) {
+        inputData[currentLine] = [];
+      }
+
+      inputData[currentLine][currentWord] =
+        handleCurrentWordInputData(newInputValue);
 
       dispatch({
         type: "input",
@@ -72,7 +108,7 @@ export default function TypeTest() {
   }
 
   function compareInputToWord(input: string): boolean {
-    const word = state.words[currentWord];
+    const word = state.words[currentLine][currentWord];
 
     return word.startsWith(input);
   }
@@ -81,7 +117,7 @@ export default function TypeTest() {
     const isCorrect = compareInputToWord(value);
     const charIndex = value.length - 1;
 
-    let currentWordInputData = state.inputData[currentWord] || [];
+    let currentWordInputData = state.inputData?.[currentLine]?.[currentWord] || [];
     currentWordInputData[charIndex] = isCorrect;
 
     return currentWordInputData;
@@ -110,30 +146,44 @@ export default function TypeTest() {
             />
 
             <div>
-              {state.words.map((word, index) => {
-                const wordId = `word_${index}`;
+              {state.words.map((line, lineIndex) => {
+                const lineId = `line_${lineIndex}`;
+
+                if (currentLine > lineIndex) return null
+
                 return (
-                  <span
-                    id={wordId}
-                    key={wordId}
-                    className="z-[1] relative whitespace-pre-wrap box-border"
-                  >
-                    {word.split("").map((char, charIndex) => {
-                      const charId = `char_${index}_${charIndex}`;
-                      const isCorrect = state.inputData[index]?.[charIndex];
+                  <span id={lineId} key={lineId} className="flex flex-row">
+                    {line.map((word, index) => {
+                      const wordId = `word_${index}`;
+
                       return (
                         <span
-                          id={charId}
-                          key={charId}
-                          className={`${
-                            typeof isCorrect === "boolean"
-                              ? isCorrect
-                                ? "text-green-500"
-                                : "text-red-500"
-                              : undefined
-                          }`}
+                          id={wordId}
+                          key={wordId}
+                          className={`z-[1] relative whitespace-pre-wrap box-border 
+                          `}
                         >
-                          {char}
+                          {word.split("").map((char, charIndex) => {
+                            const charId = `char_${index}_${charIndex}`;
+                            const isCharCorrect =
+                              state.inputData[lineIndex]?.[index]?.[charIndex];
+
+                            return (
+                              <span
+                                id={charId}
+                                key={charId}
+                                className={`${
+                                  typeof isCharCorrect === "boolean"
+                                    ? isCharCorrect
+                                      ? "text-green-500"
+                                      : "text-red-500"
+                                    : undefined
+                                }`}
+                              >
+                                {char}
+                              </span>
+                            );
+                          })}
                         </span>
                       );
                     })}

@@ -8,6 +8,13 @@ export function generateWords(amount: number) {
   return words;
 }
 
+export function generateLinesOfWords(amount: number) {
+  let lines = [];
+  for (let i = 0; i < amount; i++) {
+    lines.push(generateWords(10));
+  }
+  return lines;
+}
 
 let commonWords = [
   "the",

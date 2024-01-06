@@ -6,9 +6,12 @@ export type ReducerState = {
   status: Status;
   duration: number;
   input: string;
-  words: string[];
+
+  // line>word
+  words: string[][];
   
-  inputData: boolean[][];
+  // line>word>char
+  inputData: boolean[][][];
 
   options: {
     includePunctuation: boolean;

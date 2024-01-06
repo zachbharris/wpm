@@ -1,7 +1,7 @@
 "use client";
 
 import { ReducerState, ReducerAction } from "@/context/TypeTest";
-import { generateWords } from "@/lib/words";
+import { generateWords, generateLinesOfWords } from "@/lib/words";
 
 export const reducer = (
   state: ReducerState,
@@ -16,7 +16,7 @@ export const reducer = (
     case "restart":
       return {
         ...state,
-        words: generateWords(20),
+        words: generateLinesOfWords(2),
         status: "idle",
         input: "",
         inputData: [],
@@ -29,7 +29,12 @@ export const reducer = (
     case "generate_words":
       return {
         ...state,
-        words: generateWords(20),
+        words: generateLinesOfWords(2),
+      };
+    case "generate_line":
+      return {
+        ...state,
+        words: [...state.words, ...generateLinesOfWords(1)],
       };
     case "update_state":
       return {
