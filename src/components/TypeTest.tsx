@@ -1,5 +1,7 @@
 "use client";
 
+// TODO: Track Correct / Incorrect Letters/Words
+
 import { useCallback, useEffect, useRef, useReducer, useState } from "react";
 import {
   TypeTestContext,
@@ -22,10 +24,10 @@ export default function TypeTest() {
     const char = document.getElementById(`char_${currentWord}_${currentChar}`);
 
     if (cursor && word && char) {
-      cursor.style.left = `${char.offsetLeft}px`;
+      cursor.style.left = `${word.offsetLeft + char.offsetLeft}px`;
       cursor.style.width = `${char.offsetWidth}px`;
     }
-  }, [currentWord, currentChar]);
+  }, [state.words, currentWord, currentChar]);
 
   useEffect(() => {
     handleCursor();
@@ -52,9 +54,37 @@ export default function TypeTest() {
       setCurrentChar(0);
       dispatch({ type: "input", payload: { input: "" } });
     } else {
-      setCurrentChar(e.target.value.length);
-      dispatch({ type: "input", payload: { input: e.target.value } });
+      const charIndex = e.target.value.length;
+      const newInputValue = e.target.value;
+
+      const inputData = [...state.inputData];
+      inputData[currentWord] = handleCurrentWordInputData(newInputValue);
+
+      dispatch({
+        type: "input",
+        payload: {
+          input: newInputValue,
+          inputData,
+        },
+      });
+      setCurrentChar(charIndex);
     }
+  }
+
+  function compareInputToWord(input: string): boolean {
+    const word = state.words[currentWord];
+
+    return word.startsWith(input);
+  }
+
+  function handleCurrentWordInputData(value: string) {
+    const isCorrect = compareInputToWord(value);
+    const charIndex = value.length - 1;
+
+    let currentWordInputData = state.inputData[currentWord] || [];
+    currentWordInputData[charIndex] = isCorrect;
+
+    return currentWordInputData;
   }
 
   function restart() {
@@ -72,8 +102,13 @@ export default function TypeTest() {
         <div className="flex flex-col gap-2 relative">
           <div
             id="test"
-            className="select-none h-24 bg-neutral-900 p-4 rounded-lg text-2xl font-bold"
+            className="relative select-none h-24 bg-neutral-900 p-4 rounded-lg text-2xl font-bold"
           >
+            <span
+              id="cursor"
+              className="absolute z-0 bg-neutral-700 h-8 rounded-sm"
+            />
+
             <div>
               {state.words.map((word, index) => {
                 const wordId = `word_${index}`;
@@ -81,12 +116,23 @@ export default function TypeTest() {
                   <span
                     id={wordId}
                     key={wordId}
-                    className="z-10 whitespace-pre-wrap"
+                    className="z-[1] relative whitespace-pre-wrap box-border"
                   >
                     {word.split("").map((char, charIndex) => {
                       const charId = `char_${index}_${charIndex}`;
+                      const isCorrect = state.inputData[index]?.[charIndex];
                       return (
-                        <span id={charId} key={charId}>
+                        <span
+                          id={charId}
+                          key={charId}
+                          className={`${
+                            typeof isCorrect === "boolean"
+                              ? isCorrect
+                                ? "text-green-500"
+                                : "text-red-500"
+                              : undefined
+                          }`}
+                        >
                           {char}
                         </span>
                       );
@@ -95,16 +141,6 @@ export default function TypeTest() {
                 );
               })}
             </div>
-
-            <span
-              id="cursor"
-              className="absolute bg-neutral-700 h-8 rounded-sm"
-              style={{
-                top: 16,
-                left: 16,
-                zIndex: 0,
-              }}
-            />
           </div>
           <div className="flex flex-row gap-2">
             <input

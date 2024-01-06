@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { generateWords } from "@/lib/words";
 
 export type Status = "idle" | "running" | "finished";
 
@@ -7,7 +6,9 @@ export type ReducerState = {
   status: Status;
   duration: number;
   input: string;
-  words: string[]
+  words: string[];
+  
+  inputData: boolean[][];
 
   options: {
     includePunctuation: boolean;
@@ -22,6 +23,7 @@ export const initialState: ReducerState = {
   duration: 30,
   input: "",
   words: [],
+  inputData: [],
 
   options: {
     includePunctuation: false,
@@ -36,6 +38,7 @@ export type ReducerAction = {
   payload?: Partial<ReducerState>;
 };
 
-
 export const TypeTestContext = createContext<ReducerState>(null!);
-export const TypeTestDispatchContext = createContext<React.Dispatch<ReducerAction>>(null!);
+export const TypeTestDispatchContext = createContext<
+  React.Dispatch<ReducerAction>
+>(null!);

@@ -19,6 +19,7 @@ export const reducer = (
         words: generateWords(20),
         status: "idle",
         input: "",
+        inputData: [],
       };
     case "finish":
       return {
@@ -29,7 +30,7 @@ export const reducer = (
       return {
         ...state,
         words: generateWords(20),
-      }
+      };
     case "update_state":
       return {
         ...state,
@@ -39,6 +40,7 @@ export const reducer = (
       return {
         ...state,
         input: action.payload?.input ?? "",
+        inputData: action.payload?.inputData || state.inputData,
       };
     case "input_space":
       return {
