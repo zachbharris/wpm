@@ -13,20 +13,19 @@ import Options from "./Options";
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [currentLine, setCurrentLine] = useState(0);
-  const [currentChar, setCurrentChar] = useState(0);
-  const [currentWord, setCurrentWord] = useState(0);
 
   function getCurrentWord() {
-    return document.getElementById(`word_${currentWord}`);
+    return document.getElementById(`word_${state.currentWord}`);
   }
 
   function getCurrentChar() {
-    return document.getElementById(`char_${currentWord}_${currentChar}`);
+    return document.getElementById(
+      `char_${state.currentWord}_${state.currentChar}`,
+    );
   }
 
   function getCurrentLine() {
-    return document.getElementById(`line_${currentLine}`);
+    return document.getElementById(`line_${state.currentLine}`);
   }
 
   function checkIfAtEndOfLine() {
@@ -45,17 +44,10 @@ export default function TypeTest() {
       cursor.style.left = `${word.offsetLeft + char.offsetLeft}px`;
       cursor.style.width = `${char.offsetWidth}px`;
     }
-  }, [state.words, currentWord, currentChar]);
+  }, [state.words, state.currentWord, state.currentChar]);
 
   useEffect(() => {
-    if (state.status === "idle") {
-      setCurrentLine(0);
-      setCurrentChar(0);
-      setCurrentWord(0);
-      handleCursor();
-    } else {
-      handleCursor();
-    }
+    handleCursor();
   }, [state.status, handleCursor]);
 
   function handleInputValueChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -74,13 +66,23 @@ export default function TypeTest() {
       const isEndOfLine = checkIfAtEndOfLine();
 
       if (isEndOfLine) {
-        setCurrentLine((prev) => prev + 1);
-        setCurrentWord(0);
-        setCurrentChar(0);
+        dispatch({
+          type: "update_state",
+          payload: {
+            currentLine: state.currentLine + 1,
+            currentWord: 0,
+            currentChar: 0,
+          },
+        });
         dispatch({ type: "generate_line" });
       } else {
-        setCurrentWord((prev) => prev + 1);
-        setCurrentChar(0);
+        dispatch({
+          type: "update_state",
+          payload: {
+            currentWord: state.currentWord + 1,
+            currentChar: 0,
+          },
+        });
       }
 
       dispatch({ type: "input", payload: { input: "" } });
@@ -90,11 +92,11 @@ export default function TypeTest() {
 
       const inputData = [...state.inputData];
 
-      if (!inputData[currentLine]) {
-        inputData[currentLine] = [];
+      if (!inputData[state.currentLine]) {
+        inputData[state.currentLine] = [];
       }
 
-      inputData[currentLine][currentWord] =
+      inputData[state.currentLine][state.currentWord] =
         handleCurrentWordInputData(newInputValue);
 
       dispatch({
@@ -104,12 +106,18 @@ export default function TypeTest() {
           inputData,
         },
       });
-      setCurrentChar(charIndex);
+
+      dispatch({
+        type: "update_state",
+        payload: {
+          currentChar: charIndex,
+        },
+      });
     }
   }
 
   function compareInputToWord(input: string): boolean {
-    const word = state.words[currentLine][currentWord];
+    const word = state.words[state.currentLine][state.currentWord];
 
     return word.startsWith(input);
   }
@@ -119,7 +127,7 @@ export default function TypeTest() {
     const charIndex = value.length - 1;
 
     let currentWordInputData =
-      state.inputData?.[currentLine]?.[currentWord] || [];
+      state.inputData?.[state.currentLine]?.[state.currentWord] || [];
     currentWordInputData[charIndex] = isCorrect;
 
     return currentWordInputData;
@@ -151,7 +159,7 @@ export default function TypeTest() {
               {state.words.map((line, lineIndex) => {
                 const lineId = `line_${lineIndex}`;
 
-                if (currentLine > lineIndex) return null;
+                if (state.currentLine > lineIndex) return null;
 
                 return (
                   <span id={lineId} key={lineId} className="flex flex-row">
@@ -161,8 +169,8 @@ export default function TypeTest() {
                       let isWordCorrect = false;
                       let isPastCurrentWord = false;
 
-                      if (currentLine === lineIndex) {
-                        if (currentWord > index) {
+                      if (state.currentLine === lineIndex) {
+                        if (state.currentWord > index) {
                           isPastCurrentWord = true;
                         }
                       }

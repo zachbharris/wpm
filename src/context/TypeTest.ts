@@ -13,6 +13,10 @@ export type ReducerState = {
   // line>word>char
   inputData: boolean[][][];
 
+  currentLine: number;
+  currentWord: number;
+  currentChar: number;
+
   options: {
     includePunctuation: boolean;
     includeNumbers: boolean;
@@ -27,6 +31,10 @@ export const initialState: ReducerState = {
   input: "",
   words: [],
   inputData: [],
+
+  currentLine: 0,
+  currentWord: 0,
+  currentChar: 0,
 
   options: {
     includePunctuation: false,
