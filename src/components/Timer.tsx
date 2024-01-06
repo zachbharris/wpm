@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
 
 export default function Timer() {
-  const [{ status, duration }, dispatch] = useTypeTestContext();
+  const [{ status, options: {duration} }, dispatch] = useTypeTestContext();
   const [time, setTime] = useState(duration);
 
   const formattedTime = useMemo(() => {

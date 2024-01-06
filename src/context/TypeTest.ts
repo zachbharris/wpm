@@ -4,12 +4,11 @@ export type Status = "idle" | "running" | "finished";
 
 export type ReducerState = {
   status: Status;
-  duration: number;
   input: string;
 
   // line>word
   words: string[][];
-  
+
   // line>word>char
   inputData: boolean[][][];
 
@@ -22,12 +21,12 @@ export type ReducerState = {
     includeNumbers: boolean;
     showTimer: boolean;
     showWPM: boolean;
+    duration: number;
   };
 };
 
 export const initialState: ReducerState = {
   status: "idle",
-  duration: 30,
   input: "",
   words: [],
   inputData: [],
@@ -37,6 +36,7 @@ export const initialState: ReducerState = {
   currentChar: 0,
 
   options: {
+    duration: 30,
     includePunctuation: false,
     includeNumbers: false,
     showTimer: true,

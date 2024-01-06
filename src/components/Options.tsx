@@ -12,16 +12,25 @@ export default function Options() {
 }
 
 function TestDuration() {
-  const [{ duration }, dispatch] = useTypeTestContext();
+  const [
+    {
+      options: { duration, ...opts },
+    },
+    dispatch,
+  ] = useTypeTestContext();
 
   const options = [10, 30, 60, 120];
 
   function handleDurationChange(value: number) {
     dispatch({
       type: "update_state",
-      payload: { duration: value, status: "idle", input: "" },
+      payload: {
+        options: { ...opts, duration: value },
+        status: "idle",
+        input: "",
+      },
     });
-    dispatch({ type: "generate_words" })
+    dispatch({ type: "generate_words" });
   }
 
   return (

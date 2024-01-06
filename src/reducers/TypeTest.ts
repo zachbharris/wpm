@@ -16,6 +16,9 @@ export const reducer = (
     case "restart":
       return {
         ...initialState,
+        options: {
+          ...state.options,
+        },
         words: generateLinesOfWords(2),
       };
     case "finish":
