@@ -14,7 +14,10 @@ export const reducer = (
         status: "running",
       };
     case "restart":
-      return initialState;
+      return {
+        ...initialState,
+        words: generateLinesOfWords(2),
+      };
     case "finish":
       return {
         ...state,
