@@ -59,12 +59,16 @@ export default function TypeTest() {
   }, [state.status, handleCursor]);
 
   function handleInputValueChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const chars = e.target.value.split("");
+    const recentlyTypedChar = chars[chars.length - 1];
+
+    if (state.input === "" && recentlyTypedChar === " ") {
+      return;
+    }
+
     if (state.status === "idle") {
       dispatch({ type: "start" });
     }
-
-    const chars = e.target.value.split("");
-    const recentlyTypedChar = chars[chars.length - 1];
 
     if (recentlyTypedChar === " ") {
       const isEndOfLine = checkIfAtEndOfLine();
