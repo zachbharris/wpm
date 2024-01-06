@@ -1,7 +1,5 @@
 "use client";
 
-// TODO: Track Correct / Incorrect Letters/Words
-
 import { useCallback, useEffect, useRef, useReducer, useState } from "react";
 import {
   TypeTestContext,
@@ -11,8 +9,6 @@ import {
 import { reducer } from "@/reducers/TypeTest";
 import Timer from "./Timer";
 import Options from "./Options";
-
-const DEFAULT_WORD_OFFSET = 17;
 
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -53,6 +49,7 @@ export default function TypeTest() {
 
   useEffect(() => {
     if (state.status === "idle") {
+      setCurrentLine(0);
       setCurrentChar(0);
       setCurrentWord(0);
       handleCursor();
@@ -117,7 +114,8 @@ export default function TypeTest() {
     const isCorrect = compareInputToWord(value);
     const charIndex = value.length - 1;
 
-    let currentWordInputData = state.inputData?.[currentLine]?.[currentWord] || [];
+    let currentWordInputData =
+      state.inputData?.[currentLine]?.[currentWord] || [];
     currentWordInputData[charIndex] = isCorrect;
 
     return currentWordInputData;
@@ -149,18 +147,50 @@ export default function TypeTest() {
               {state.words.map((line, lineIndex) => {
                 const lineId = `line_${lineIndex}`;
 
-                if (currentLine > lineIndex) return null
+                if (currentLine > lineIndex) return null;
 
                 return (
                   <span id={lineId} key={lineId} className="flex flex-row">
                     {line.map((word, index) => {
                       const wordId = `word_${index}`;
+                      let isWordComplete = false;
+                      let isWordCorrect = false;
+                      let isPastCurrentWord = false;
+
+                      if (currentLine === lineIndex) {
+                        if (currentWord > index) {
+                          isPastCurrentWord = true;
+                        }
+                      }
+
+                      if (isPastCurrentWord) {
+                        const currentWordInputData =
+                          state.inputData?.[lineIndex]?.[index] || [];
+                        isWordComplete = true;
+
+                        const isCharsCorrect = currentWordInputData.every(
+                          (char) => char === true,
+                        );
+                        const isWordLengthCorrect =
+                          currentWordInputData.length + 1 === word.length;
+
+                        if (isCharsCorrect && isWordLengthCorrect) {
+                          isWordCorrect = true;
+                        }
+                      }
 
                       return (
                         <span
                           id={wordId}
                           key={wordId}
                           className={`z-[1] relative whitespace-pre-wrap box-border 
+                            ${
+                              isWordComplete
+                                ? isWordCorrect
+                                  ? "text-green-500"
+                                  : "text-red-500"
+                                : undefined
+                            }
                           `}
                         >
                           {word.split("").map((char, charIndex) => {
@@ -173,7 +203,8 @@ export default function TypeTest() {
                                 id={charId}
                                 key={charId}
                                 className={`${
-                                  typeof isCharCorrect === "boolean"
+                                  typeof isCharCorrect === "boolean" &&
+                                  !isWordComplete
                                     ? isCharCorrect
                                       ? "text-green-500"
                                       : "text-red-500"
