@@ -170,7 +170,7 @@ function Cursor() {
         cursorEl.style.width = "2px";
       }
     }
-  }, [state.words, state.currentWord, state.currentChar, state.options.cursor]);
+  }, [state.words, state.currentWord, state.currentChar]);
 
   useEffect(() => {
     handleCursor();

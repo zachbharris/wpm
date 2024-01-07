@@ -28,6 +28,7 @@ export type ReducerState = {
     showTimer: boolean;
     showWPM: boolean;
     duration: number;
+    cursor: "block" | "line";
   };
 };
 
@@ -48,6 +49,7 @@ export const initialState: ReducerState = {
     includeNumbers: false,
     showTimer: true,
     showWPM: true,
+    cursor: "block"
   },
 };
 
