@@ -2,7 +2,7 @@ import TypeTest from "@/components/TypeTest";
 
 export default function Home() {
   return (
-    <div>
+    <div className="pt-16">
       <TypeTest />
     </div>
   );

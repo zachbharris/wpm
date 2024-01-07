@@ -20,10 +20,12 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          "bg-neutral-950 max-w-2xl mx-auto text-neutral-100 selection:bg-neutral-800",
+          "min-h-screen",
+          "bg-neutral-950 text-neutral-100 selection:bg-neutral-800",
+          "bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:24px_24px]",
         )}
       >
-        {children}
+        <div className="max-w-2xl mx-auto">{children}</div>
       </body>
     </html>
   );
