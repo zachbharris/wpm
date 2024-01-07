@@ -134,9 +134,9 @@ export default function TypeTest() {
               })}
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row justify-center items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <Input inputRef={inputRef} isEndOfLine={isEndOfLine} className="w-full" />
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 flex-grow w-full">
               <WordsPerMinute />
               <Timer />
               <RestartButton restart={restart} />

@@ -121,7 +121,7 @@ export default function Input({
       disabled={state.status === "finished"}
       readOnly={state.status === "finished"}
       className={cn(
-        "flex flex-1 p-4 rounded-md bg-neutral-900",
+        "flex flex-grow p-4 rounded-md bg-neutral-900",
         "text-xl font-bold",
         "outline-none border border-neutral-800 box-border h-[60px]",
         borderColor,
