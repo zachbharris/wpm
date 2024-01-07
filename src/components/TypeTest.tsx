@@ -94,7 +94,7 @@ export default function TypeTest() {
                         <span
                           id={wordId}
                           key={wordId}
-                          className={`z-[1] relative whitespace-pre-wrap box-border 
+                          className={`z-[1] relative whitespace-pre-wrap box-border px-1 
                             ${
                               isWordComplete
                                 ? isWordCorrect

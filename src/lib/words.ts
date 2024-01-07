@@ -1,19 +1,42 @@
 import type { InputData } from "@/context/TypeTest";
 
-export function generateWords(amount: number) {
+// export function generateWords(amount: number): string[] {
+//   const words = new Set<string>();
+//   while (words.size < amount) {
+//     const word = commonWords[Math.floor(Math.random() * commonWords.length)];
+//     words.add(word + " ");
+//   }
+//   return Array.from(words);
+// }
+
+export function generateWords(maxCharacters: number): string[] {
   const words = new Set<string>();
-  while (words.size < amount) {
+  let totalLength = 0;
+
+  while (totalLength < maxCharacters) {
     const word = commonWords[Math.floor(Math.random() * commonWords.length)];
-    words.add(word + " ");
+
+    // Check if the word is already in the set
+    if (!words.has(word)) {
+      // Calculate new length including the word and a space (if it's not the first word)
+      const newLength = totalLength + word.length + (words.size > 0 ? 1 : 0);
+
+      if (newLength <= maxCharacters) {
+        words.add(word + " ");
+        totalLength = newLength;
+      } else {
+        break; // Break the loop if adding another word would exceed the limit
+      }
+    }
   }
+
   return Array.from(words);
 }
-
 
 export function generateLinesOfWords(amount: number) {
   let lines = [];
   for (let i = 0; i < amount; i++) {
-    lines.push(generateWords(10));
+    lines.push(generateWords(50));
   }
   return lines;
 }
@@ -31,7 +54,7 @@ function getTotalCorrectCharsTyped(data: InputData) {
   let total = 0;
   for (const line of data) {
     for (const word of line) {
-      total += 1
+      total += 1;
       for (const char of word) {
         if (char === true) {
           total += 1;
