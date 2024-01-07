@@ -1,13 +1,14 @@
 import type { InputData } from "@/context/TypeTest";
+
 export function generateWords(amount: number) {
-  const words = [];
-  for (let i = 0; i < amount; i++) {
-    words.push(
-      `${commonWords[Math.floor(Math.random() * commonWords.length)]} `,
-    );
+  const words = new Set<string>();
+  while (words.size < amount) {
+    const word = commonWords[Math.floor(Math.random() * commonWords.length)];
+    words.add(word + " ");
   }
-  return words;
+  return Array.from(words);
 }
+
 
 export function generateLinesOfWords(amount: number) {
   let lines = [];
