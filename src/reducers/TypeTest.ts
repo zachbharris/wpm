@@ -26,6 +26,11 @@ export const reducer = (
         ...state,
         status: "finished",
       };
+    case 'tick':
+      return {
+        ...state,
+        currentDurationInSeconds: state.currentDurationInSeconds + 1,
+      }
     case "generate_words":
       return {
         ...state,

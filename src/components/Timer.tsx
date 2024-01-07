@@ -27,6 +27,7 @@ export default function Timer() {
       interval = setInterval(() => {
         if (time > 0) {
           setTime((prevTime) => prevTime - 1);
+          dispatch({ type: "tick" })
         } else if (time === 0) {
           clearInterval(interval);
           dispatch({ type: "finish" })

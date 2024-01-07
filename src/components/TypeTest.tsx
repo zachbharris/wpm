@@ -9,6 +9,7 @@ import {
 import { reducer } from "@/reducers/TypeTest";
 import Timer from "./Timer";
 import Options from "./Options";
+import WPM from './wpm';
 
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -243,9 +244,8 @@ export default function TypeTest() {
               className="flex-1 bg-neutral-900 rounded-xl px-4 disabled:cursor-not-allowed disabled:text-neutral-700"
               disabled={state.status === "finished"}
             />
-            <div id="wpm" className="bg-neutral-900 p-4 rounded-xl">
-              0 WPM
-            </div>
+
+            <WPM />
             <Timer />
             <button
               type="button"

@@ -2,6 +2,11 @@ import { createContext } from "react";
 
 export type Status = "idle" | "running" | "finished";
 
+export type Character = string
+export type Word = Character[]
+export type Line = Word[]
+export type InputData = boolean[][][] 
+
 export type ReducerState = {
   status: Status;
   input: string;
@@ -15,6 +20,7 @@ export type ReducerState = {
   currentLine: number;
   currentWord: number;
   currentChar: number;
+  currentDurationInSeconds: number;
 
   options: {
     includePunctuation: boolean;
@@ -34,6 +40,7 @@ export const initialState: ReducerState = {
   currentLine: 0,
   currentWord: 0,
   currentChar: 0,
+  currentDurationInSeconds: 0,
 
   options: {
     duration: 30,

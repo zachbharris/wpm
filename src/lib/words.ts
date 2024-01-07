@@ -1,3 +1,4 @@
+import type { InputData } from "@/context/TypeTest";
 export function generateWords(amount: number) {
   const words = [];
   for (let i = 0; i < amount; i++) {
@@ -14,6 +15,30 @@ export function generateLinesOfWords(amount: number) {
     lines.push(generateWords(10));
   }
   return lines;
+}
+
+export function calculateWordsPerMinute(
+  inputData: InputData,
+  durationInSeconds: number,
+) {
+  const correctChars = getTotalCorrectCharsTyped(inputData);
+
+  return Math.round(correctChars / 5 / (durationInSeconds / 60));
+}
+
+function getTotalCorrectCharsTyped(data: InputData) {
+  let total = 0;
+  for (const line of data) {
+    for (const word of line) {
+      total += 1
+      for (const char of word) {
+        if (char === true) {
+          total += 1;
+        }
+      }
+    }
+  }
+  return total;
 }
 
 let commonWords = [
