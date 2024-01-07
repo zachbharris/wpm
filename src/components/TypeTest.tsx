@@ -169,12 +169,14 @@ function Cursor() {
       } else if (state.options.cursor === "line") {
         cursorEl.style.width = "2px";
       }
+    } else {
+
     }
-  }, [state.words, state.currentWord, state.currentChar, state.options.cursor]);
+  }, [state.status, state.words, state.currentWord, state.currentChar, state.options.cursor]);
 
   useEffect(() => {
     handleCursor();
-  }, [state.status, handleCursor]);
+  }, [handleCursor]);
 
   return <span id="cursor" className={cursor()} />;
 }

@@ -34,7 +34,10 @@ export const reducer = (
     case "generate_words":
       return {
         ...state,
+        status: "idle",
         words: generateLinesOfWords(2),
+        inputData: [],
+        input: "",
       };
     case "generate_line":
       return {

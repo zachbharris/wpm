@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
+import { checkIfCurrentInputHasError } from "@/lib/words";
 
 type InputProps = {
   inputRef: React.RefObject<HTMLInputElement>;
@@ -7,6 +9,7 @@ type InputProps = {
 
 export default function Input({ inputRef, isEndOfLine }: InputProps) {
   const [state, dispatch] = useTypeTestContext();
+  const [hasError, setHasError] = useState(false);
 
   function compareInputToWord(input: string): boolean {
     const word = state.words[state.currentLine][state.currentWord];
@@ -38,6 +41,9 @@ export default function Input({ inputRef, isEndOfLine }: InputProps) {
     }
 
     if (recentlyTypedChar === " ") {
+      // reset error state
+      setHasError(false);
+
       if (isEndOfLine) {
         dispatch({
           type: "update_state",
@@ -72,6 +78,14 @@ export default function Input({ inputRef, isEndOfLine }: InputProps) {
       inputData[state.currentLine][state.currentWord] =
         handleCurrentWordInputData(newInputValue);
 
+      const inputHasError = checkIfCurrentInputHasError(inputData);
+
+      if (inputHasError) {
+        setHasError(true);
+      } else {
+        setHasError(false);
+      }
+
       dispatch({
         type: "input",
         payload: {
@@ -96,7 +110,9 @@ export default function Input({ inputRef, isEndOfLine }: InputProps) {
       value={state.input}
       disabled={state.status === "finished"}
       readOnly={state.status === "finished"}
-      className={`flex flex-1 text-xl font-bold transition-colors p-4 bg-neutral-900 rounded-md outline-none border border-neutral-800 focus:border-blue-700`}
+      className={`flex flex-1 text-xl font-bold transition-colors p-4 bg-neutral-900 rounded-md outline-none border border-neutral-800 ${
+        hasError ? "focus:border-red-700" : "focus:border-blue-600"
+      }`}
     />
   );
 }

@@ -25,6 +25,7 @@ function CursorType() {
         options: { ...opts, cursor: value },
       },
     });
+    dispatch({ type: "restart" })
   }
 
   const cursorOptions: ReducerState["options"]["cursor"][] = ["block", "line"];
@@ -69,11 +70,9 @@ function TestDuration() {
       type: "update_state",
       payload: {
         options: { ...opts, duration: value },
-        status: "idle",
-        input: "",
       },
     });
-    dispatch({ type: "generate_words" });
+    dispatch({ type: "restart" });
   }
 
   return (

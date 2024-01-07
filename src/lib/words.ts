@@ -1,14 +1,5 @@
 import type { InputData } from "@/context/TypeTest";
 
-// export function generateWords(amount: number): string[] {
-//   const words = new Set<string>();
-//   while (words.size < amount) {
-//     const word = commonWords[Math.floor(Math.random() * commonWords.length)];
-//     words.add(word + " ");
-//   }
-//   return Array.from(words);
-// }
-
 export function generateWords(maxCharacters: number): string[] {
   const words = new Set<string>();
   let totalLength = 0;
@@ -63,6 +54,13 @@ function getTotalCorrectCharsTyped(data: InputData) {
     }
   }
   return total;
+}
+
+export function checkIfCurrentInputHasError(data: InputData) {
+  const currentLine = data[data.length - 1] || []
+  const currentWord = currentLine[currentLine.length - 1] || []
+
+  return currentWord.includes(false)
 }
 
 let commonWords = [
