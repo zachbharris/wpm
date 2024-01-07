@@ -2,7 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
 
 export default function Timer() {
-  const [{ status, options: {duration} }, dispatch] = useTypeTestContext();
+  const [
+    {
+      status,
+      options: { duration },
+    },
+    dispatch,
+  ] = useTypeTestContext();
   const [time, setTime] = useState(duration);
 
   const formattedTime = useMemo(() => {
@@ -27,10 +33,10 @@ export default function Timer() {
       interval = setInterval(() => {
         if (time > 0) {
           setTime((prevTime) => prevTime - 1);
-          dispatch({ type: "tick" })
+          dispatch({ type: "tick" });
         } else if (time === 0) {
           clearInterval(interval);
-          dispatch({ type: "finish" })
+          dispatch({ type: "finish" });
         }
       }, 1000);
     }
@@ -41,8 +47,8 @@ export default function Timer() {
   }, [status, time]);
 
   return (
-    <div className="font-mono bg-neutral-900 rounded-xl p-4">
-      {formattedTime}
+    <div className="bg-neutral-900 rounded-md p-4 flex flex-row gap-2 items-center justify-center w-24">
+      <span className="font-bold font-mono text-xl">{formattedTime}</span>
     </div>
   );
 }

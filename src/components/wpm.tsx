@@ -28,8 +28,10 @@ export default function WPM() {
     };
   }, [state.status, state.currentDurationInSeconds]);
 
-  return <div>
-    <span>{wpm}</span>
-    <span>WPM</span>
-  </div>;
+  return (
+    <div className="bg-neutral-900 rounded-md p-4 flex flex-row gap-2 items-center justify-center w-32">
+      <span className="text-xl font-bold font-mono">{wpm}</span>
+      <span className="text-sm">WPM</span>
+    </div>
+  );
 }
