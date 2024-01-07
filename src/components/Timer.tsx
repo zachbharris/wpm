@@ -47,7 +47,7 @@ export default function Timer() {
   }, [status, time]);
 
   return (
-    <div className="bg-neutral-900 rounded-md p-4 flex flex-row gap-2 items-center justify-center w-24">
+    <div className="bg-neutral-900 rounded-md p-4 flex flex-row gap-2 items-center justify-center w-full max-w-24">
       <span className="font-bold font-mono text-xl">{formattedTime}</span>
     </div>
   );

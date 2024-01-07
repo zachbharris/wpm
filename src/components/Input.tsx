@@ -1,13 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
+import { cn } from "@/lib/utils";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
 import { checkIfCurrentInputHasError } from "@/lib/words";
 
 type InputProps = {
   inputRef: React.RefObject<HTMLInputElement>;
   isEndOfLine: boolean;
+  className?: string;
 };
 
-export default function Input({ inputRef, isEndOfLine }: InputProps) {
+export default function Input({
+  inputRef,
+  isEndOfLine,
+  className,
+}: InputProps) {
   const [state, dispatch] = useTypeTestContext();
   const [hasError, setHasError] = useState(false);
 
@@ -103,6 +109,10 @@ export default function Input({ inputRef, isEndOfLine }: InputProps) {
     }
   }
 
+  const borderColor = useMemo(() => {
+    return hasError ? "focus:border-red-700" : "focus:border-blue-600";
+  }, [hasError]);
+
   return (
     <input
       ref={inputRef}
@@ -110,9 +120,13 @@ export default function Input({ inputRef, isEndOfLine }: InputProps) {
       value={state.input}
       disabled={state.status === "finished"}
       readOnly={state.status === "finished"}
-      className={`flex flex-1 text-xl font-bold transition-colors p-4 bg-neutral-900 rounded-md outline-none border border-neutral-800 ${
-        hasError ? "focus:border-red-700" : "focus:border-blue-600"
-      }`}
+      className={cn(
+        "flex flex-1 p-4 rounded-md bg-neutral-900",
+        "text-xl font-bold",
+        "outline-none border border-neutral-800 box-border h-[60px]",
+        borderColor,
+        className
+      )}
     />
   );
 }
