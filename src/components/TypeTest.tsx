@@ -46,14 +46,19 @@ export default function TypeTest() {
     dispatch({ type: "generate_words" });
   }, []);
 
-  const debouncedRestart = debounce(restart, 500)
+  const handleResize = debounce(() => {
+    const width = document.body.clientWidth;
+    if (width < 900) {
+      restart();
+    }
+  }, 500);
 
   // handle screen resize
   useEffect(() => {
-    window.addEventListener("resize", debouncedRestart);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", debouncedRestart);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -73,7 +78,7 @@ export default function TypeTest() {
                 if (state.currentLine > lineIndex) return null;
 
                 return (
-                  <span id={lineId} key={lineId} className="flex flex-row">
+                  <span id={lineId} key={lineId} className="flex flex-row gap-1">
                     {line.map((word, index) => {
                       const wordId = `word_${index}`;
                       let isWordComplete = false;
@@ -106,7 +111,7 @@ export default function TypeTest() {
                         <span
                           id={wordId}
                           key={wordId}
-                          className={`z-[1] relative whitespace-pre-wrap box-border px-1 
+                          className={`z-[1] relative whitespace-pre-wrap box-border 
                             ${
                               isWordComplete
                                 ? isWordCorrect
