@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
+import { cn } from "@/lib/utils";
 
 export default function Timer() {
   const [
@@ -47,7 +48,12 @@ export default function Timer() {
   }, [status, time]);
 
   return (
-    <div className="bg-neutral-900 rounded-md p-4 flex flex-row gap-2 items-center justify-center w-24">
+    <div
+      className={cn(
+        "flex flex-row gap-2 flex-grow p-4 items-center justify-center rounded-md",
+        "bg-neutral-900",
+      )}
+    >
       <span className="font-bold font-mono text-xl">{formattedTime}</span>
     </div>
   );

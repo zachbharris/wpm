@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 type RestartProps = {
   restart: () => void;
 };
@@ -6,7 +8,12 @@ export default function Restart({ restart }: RestartProps) {
   return (
     <button
       type="button"
-      className="bg-neutral-900 hover:bg-neutral-800 rounded-md p-4 w-16 flex items-center justify-center outline-none border border-transparent focus:border-blue-700 transition-colors"
+      name="restart"
+      className={cn(
+        "flex items-center justify-center",
+        "bg-neutral-900 hover:bg-neutral-800 rounded-md min-h-[60px] min-w-[60px]",
+        "outline-none border border-transparent focus:border-blue-700 transition-colors",
+      )}
       onClick={restart}
     >
       <svg
@@ -21,5 +28,5 @@ export default function Restart({ restart }: RestartProps) {
         />
       </svg>
     </button>
-  );
+  ); 
 }

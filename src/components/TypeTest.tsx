@@ -14,6 +14,7 @@ import WordsPerMinute from "./wpm";
 import Input from "./Input";
 import RestartButton from "./Restart";
 import { cva } from "class-variance-authority";
+import { debounce } from "lodash";
 
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -45,13 +46,24 @@ export default function TypeTest() {
     dispatch({ type: "generate_words" });
   }, []);
 
+  const debouncedRestart = debounce(restart, 500)
+
+  // handle screen resize
+  useEffect(() => {
+    window.addEventListener("resize", debouncedRestart);
+
+    return () => {
+      window.removeEventListener("resize", debouncedRestart);
+    };
+  }, []);
+
   return (
     <TypeTestContext.Provider value={state}>
       <TypeTestDispatchContext.Provider value={dispatch}>
         <div className="flex flex-col gap-4 relative">
           <div
             id="test"
-            className="relative select-none h-24 bg-neutral-900 p-4 rounded-md text-2xl font-bold"
+            className="relative select-none h-24 bg-neutral-900 p-4 rounded-md text-2xl font-bold overflow-hidden"
           >
             <Cursor />
             <div>
@@ -134,11 +146,17 @@ export default function TypeTest() {
               })}
             </div>
           </div>
-          <div className="flex flex-row gap-4">
-            <Input inputRef={inputRef} isEndOfLine={isEndOfLine} />
-            <WordsPerMinute />
-            <Timer />
-            <RestartButton restart={restart} />
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+            <Input
+              inputRef={inputRef}
+              isEndOfLine={isEndOfLine}
+              className="w-full"
+            />
+            <div className="flex flex-row gap-4 flex-grow w-full">
+              <WordsPerMinute />
+              <Timer />
+              <RestartButton restart={restart} />
+            </div>
           </div>
 
           <Options />
@@ -147,7 +165,6 @@ export default function TypeTest() {
     </TypeTestContext.Provider>
   );
 }
-
 
 const cursor = cva(["absolute", "z-0", "bg-neutral-700 h-8 rounded-sm"]);
 
@@ -170,9 +187,14 @@ function Cursor() {
         cursorEl.style.width = "2px";
       }
     } else {
-
     }
-  }, [state.status, state.words, state.currentWord, state.currentChar, state.options.cursor]);
+  }, [
+    state.status,
+    state.words,
+    state.currentWord,
+    state.currentChar,
+    state.options.cursor,
+  ]);
 
   useEffect(() => {
     handleCursor();
