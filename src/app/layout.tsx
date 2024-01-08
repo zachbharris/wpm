@@ -9,6 +9,27 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Words Per Minute",
   description: "Test your typing speed.",
+  keywords: [
+    "Next.js",
+    "React",
+    "Typing Test",
+    "Words Per Minute",
+    "WPM",
+    "Type Test",
+    "Type Skill Test",
+    "Keyboard Typing Test",
+  ],
+  openGraph: {
+    type: "website",
+    title: "Words Per Minute",
+    description: "Test your typing speed.",
+  },
+  twitter: {
+    creator: "@zachbharris",
+    card: "summary",
+    title: "Words Per Minute",
+    description: "Test your typing speed.",
+  },
 };
 
 export default function RootLayout({
