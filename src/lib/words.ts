@@ -25,9 +25,17 @@ export function generateWords(maxCharacters: number): string[] {
 }
 
 export function generateLinesOfWords(amount: number) {
+  let chars = 50;
+  const width = document.body.clientWidth;
+
+  if (width < 960) {
+    const totalPadding = 64;
+    chars = (width - totalPadding) / 16;
+  }
+
   let lines = [];
   for (let i = 0; i < amount; i++) {
-    lines.push(generateWords(50));
+    lines.push(generateWords(chars));
   }
   return lines;
 }
@@ -57,10 +65,10 @@ function getTotalCorrectCharsTyped(data: InputData) {
 }
 
 export function checkIfCurrentInputHasError(data: InputData) {
-  const currentLine = data[data.length - 1] || []
-  const currentWord = currentLine[currentLine.length - 1] || []
+  const currentLine = data[data.length - 1] || [];
+  const currentWord = currentLine[currentLine.length - 1] || [];
 
-  return currentWord.includes(false)
+  return currentWord.includes(false);
 }
 
 let commonWords = [

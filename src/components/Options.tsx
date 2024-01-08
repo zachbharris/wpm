@@ -3,10 +3,10 @@ import { ReducerState } from "@/context/TypeTest";
 
 export default function Options() {
   return (
-    <div className="flex flex-col gap-2">
+    <ul className="flex flex-col gap-4 sm:gap-2">
       <TestDuration />
       <CursorType />
-    </div>
+    </ul>
   );
 }
 
@@ -31,7 +31,7 @@ function CursorType() {
   const cursorOptions: ReducerState["options"]["cursor"][] = ["block", "line"];
 
   return (
-    <li className="flex flex-row justify-between">
+    <li className="flex flex-col sm:flex-row justify-between gap-2">
       <span>Cursor Type</span>
       <span className="flex flex-row gap-4">
         {cursorOptions.map((option) => {
@@ -42,6 +42,7 @@ function CursorType() {
             <button
               key={optionId}
               onClick={() => handleCursorChange(option)}
+              name={`${option} cursor`}
               className={`${
                 isSelected ? "bg-neutral-800" : "bg-transparent"
               } px-4 py-1 rounded-full`}
@@ -76,7 +77,7 @@ function TestDuration() {
   }
 
   return (
-    <li className="flex flex-row justify-between">
+    <li className="flex flex-col sm:flex-row justify-between gap-2">
       <span>Test Duration</span>
       <span className="flex flex-row gap-2">
         {options.map((option, index) => {
@@ -85,6 +86,7 @@ function TestDuration() {
           return (
             <button
               type="button"
+              name={`${option} seconds`}
               key={`dur_opt_${index}`}
               onClick={() => handleDurationChange(option)}
               className={`${
