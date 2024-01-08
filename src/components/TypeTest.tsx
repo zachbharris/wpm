@@ -14,6 +14,7 @@ import WordsPerMinute from "./wpm";
 import Input from "./Input";
 import RestartButton from "./Restart";
 import { cva } from "class-variance-authority";
+import { debounce } from "lodash";
 
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -43,6 +44,17 @@ export default function TypeTest() {
 
   useEffect(() => {
     dispatch({ type: "generate_words" });
+  }, []);
+
+  const debouncedRestart = debounce(restart, 500)
+
+  // handle screen resize
+  useEffect(() => {
+    window.addEventListener("resize", debouncedRestart);
+
+    return () => {
+      window.removeEventListener("resize", debouncedRestart);
+    };
   }, []);
 
   return (
@@ -135,7 +147,11 @@ export default function TypeTest() {
             </div>
           </div>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <Input inputRef={inputRef} isEndOfLine={isEndOfLine} className="w-full" />
+            <Input
+              inputRef={inputRef}
+              isEndOfLine={isEndOfLine}
+              className="w-full"
+            />
             <div className="flex flex-row gap-4 flex-grow w-full">
               <WordsPerMinute />
               <Timer />

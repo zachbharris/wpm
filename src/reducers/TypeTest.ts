@@ -14,6 +14,7 @@ export const reducer = (
         status: "running",
       };
     case "restart":
+
       return {
         ...initialState,
         options: {
