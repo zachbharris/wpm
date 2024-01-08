@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
 import { checkIfCurrentInputHasError } from "@/lib/words";
@@ -109,6 +109,12 @@ export default function Input({
     }
   }
 
+  useEffect(() => {
+    if (state.status === "idle") {
+      setHasError(false);
+    }
+  }, [state.status]);
+
   const borderColor = useMemo(() => {
     return hasError ? "focus:border-red-700" : "focus:border-blue-600";
   }, [hasError]);
@@ -125,7 +131,7 @@ export default function Input({
         "text-xl font-bold",
         "outline-none border border-neutral-800 box-border h-[60px]",
         borderColor,
-        className
+        className,
       )}
     />
   );
