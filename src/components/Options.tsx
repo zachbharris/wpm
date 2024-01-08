@@ -42,6 +42,7 @@ function CursorType() {
             <button
               key={optionId}
               onClick={() => handleCursorChange(option)}
+              name={`${option} cursor`}
               className={`${
                 isSelected ? "bg-neutral-800" : "bg-transparent"
               } px-4 py-1 rounded-full`}
@@ -85,6 +86,7 @@ function TestDuration() {
           return (
             <button
               type="button"
+              name={`${option} seconds`}
               key={`dur_opt_${index}`}
               onClick={() => handleDurationChange(option)}
               className={`${
