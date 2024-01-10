@@ -1,14 +1,19 @@
 import { cn } from "@/lib/utils";
+import useTypeTestContext from "@/hooks/useTypeTestContext";
 
-type RestartProps = {
-  restart: () => void;
-};
+export default function Restart() {
+  const [{ inputRef }, dispatch] = useTypeTestContext()
 
-export default function Restart({ restart }: RestartProps) {
+  function restart() {
+    dispatch({ type: "restart" });
+    inputRef.current?.focus();
+  }
+
   return (
     <button
       type="button"
       name="restart"
+      aria-label="restart test"
       className={cn(
         "flex items-center justify-center",
         "bg-neutral-900 hover:bg-neutral-800 rounded-md min-h-[60px] min-w-[60px]",
@@ -28,5 +33,5 @@ export default function Restart({ restart }: RestartProps) {
         />
       </svg>
     </button>
-  ); 
+  );
 }
