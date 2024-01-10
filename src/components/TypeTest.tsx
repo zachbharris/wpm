@@ -37,11 +37,6 @@ export default function TypeTest() {
     return line?.[line?.length - 1] === word;
   }
 
-  function restart() {
-    dispatch({ type: "restart" });
-    inputRef.current?.focus();
-  }
-
   useEffect(() => {
     dispatch({ type: "generate_words" });
   }, []);
@@ -49,12 +44,14 @@ export default function TypeTest() {
   const handleResize = debounce(() => {
     const width = document.body.clientWidth;
     if (width < 900) {
-      restart();
+      dispatch({ type: "restart" });
+      inputRef.current?.focus();
     }
   }, 500);
 
   // handle screen resize
   useEffect(() => {
+    inputRef.current?.focus();
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -63,7 +60,7 @@ export default function TypeTest() {
   }, []);
 
   return (
-    <TypeTestContext.Provider value={state}>
+    <TypeTestContext.Provider value={{ ...state, inputRef }}>
       <TypeTestDispatchContext.Provider value={dispatch}>
         <div className="flex flex-col gap-4 relative">
           <div
@@ -78,7 +75,11 @@ export default function TypeTest() {
                 if (state.currentLine > lineIndex) return null;
 
                 return (
-                  <span id={lineId} key={lineId} className="flex flex-row gap-1">
+                  <span
+                    id={lineId}
+                    key={lineId}
+                    className="flex flex-row gap-1"
+                  >
                     {line.map((word, index) => {
                       const wordId = `word_${index}`;
                       let isWordComplete = false;
@@ -160,7 +161,7 @@ export default function TypeTest() {
             <div className="flex flex-row gap-4 flex-grow w-full">
               <WordsPerMinute />
               <Timer />
-              <RestartButton restart={restart} />
+              <RestartButton />
             </div>
           </div>
 

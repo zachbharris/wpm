@@ -16,6 +16,7 @@ export type ReducerState = {
 
   // line>word>char
   inputData: boolean[][][];
+  inputRef: React.RefObject<HTMLInputElement>
 
   currentLine: number;
   currentWord: number;
@@ -37,6 +38,7 @@ export const initialState: ReducerState = {
   input: "",
   words: [],
   inputData: [],
+  inputRef: null!,
 
   currentLine: 0,
   currentWord: 0,
