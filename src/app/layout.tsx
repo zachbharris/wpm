@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { ConvexClientProvider } from "@/components/Providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,7 +51,10 @@ export default function RootLayout({
           "bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:24px_24px]",
         )}
       >
-        <div className="max-w-2xl mx-auto p-4">{children}</div>
+        <ConvexClientProvider>
+          <div className="max-w-2xl mx-auto p-4">{children}</div>
+        </ConvexClientProvider>
+
         <Analytics />
       </body>
     </html>

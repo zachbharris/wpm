@@ -4,8 +4,7 @@ import { calculateWordsPerMinute } from "@/lib/words";
 import { cn } from "@/lib/utils";
 
 export default function WPM() {
-  const [state] = useTypeTestContext();
-  const [wpm, setWpm] = useState(0);
+  const [state, dispatch] = useTypeTestContext();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -19,7 +18,7 @@ export default function WPM() {
             state.inputData,
             state.currentDurationInSeconds + 1,
           );
-          setWpm(wpm);
+          dispatch({ type: "update_state", payload: { currentScore: wpm } });
         }
       }, 1000);
     }
@@ -36,7 +35,7 @@ export default function WPM() {
         "bg-neutral-900 rounded-md",
       )}
     >
-      <span className="text-xl font-bold font-mono">{wpm}</span>
+      <span className="text-xl font-bold font-mono">{state.currentScore}</span>
       <span className="text-sm">WPM</span>
     </div>
   );

@@ -15,6 +15,7 @@ import Input from "./Input";
 import RestartButton from "./Restart";
 import { cva } from "class-variance-authority";
 import { debounce } from "lodash";
+import Leaderboard from "./Leaderboard";
 
 export default function TypeTest() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -166,6 +167,8 @@ export default function TypeTest() {
           </div>
 
           <Options />
+
+          <Leaderboard />
         </div>
       </TypeTestDispatchContext.Provider>
     </TypeTestContext.Provider>
