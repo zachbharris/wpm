@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { ConvexClientProvider } from "@/components/Providers";
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -53,6 +54,8 @@ export default function RootLayout({
       >
         <ConvexClientProvider>
           <div className="max-w-2xl mx-auto p-4">{children}</div>
+
+          <Toaster />
         </ConvexClientProvider>
 
         <Analytics />
