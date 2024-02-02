@@ -208,9 +208,3 @@ function Cursor() {
 
   return <span id="cursor" className={cursor()} />;
 }
-
-function Words() {}
-
-function Word() {}
-
-function Char() {}
