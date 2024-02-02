@@ -1,13 +1,22 @@
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import useTypeTestContext from "@/hooks/useTypeTestContext";
 
 export default function Restart() {
-  const [{ inputRef }, dispatch] = useTypeTestContext()
+  const [isRestarting, setIsRestarting] = useState(false);
+  const [{ inputRef, status }, dispatch] = useTypeTestContext();
 
   function restart() {
     dispatch({ type: "restart" });
-    inputRef.current?.focus();
+    setIsRestarting(true);
   }
+
+  useEffect(() => {
+    if (status === "idle" && isRestarting) {
+      inputRef.current?.focus();
+      setIsRestarting(false);
+    }
+  }, [status, isRestarting]);
 
   return (
     <button
